@@ -1,10 +1,10 @@
 # Source of this Dockerfile
 # https://gist.github.com/hermanbanken/96f0ff298c162a522ddbba44cad31081
 
-FROM nginx:alpine AS builder
+FROM nginx:1.15.12-alpine AS builder
 
-# nginx:alpine contains NGINX_VERSION environment variable, like so:
-# ENV NGINX_VERSION 1.15.0
+# nginx:1.15.12-alpine contains NGINX_VERSION environment variable, like so:
+# ENV NGINX_VERSION 1.15.12
 
 # Our NCHAN version
 ENV NCHAN_VERSION 1.2.5
@@ -28,7 +28,7 @@ RUN apk add --no-cache --virtual .build-deps \
   gd-dev \
   geoip-dev
 
-# Reuse same cli arguments as the nginx:alpine image used to build
+# Reuse same cli arguments as the nginx:1.15.12-alpine image used to build
 RUN CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') \
 	tar -zxC /usr/src -f nginx.tar.gz && \
   tar -xzvf "nchan.tar.gz" && \
@@ -37,7 +37,7 @@ RUN CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') \
   ./configure --with-compat $CONFARGS --add-dynamic-module=$NCHANDIR && \
   make && make install
 
-FROM nginx:alpine
+FROM nginx:1.15.12-alpine
 # Extract the dynamic module NCHAN from the builder image
 COPY --from=builder /usr/local/nginx/modules/ngx_nchan_module.so /usr/local/nginx/modules/ngx_nchan_module.so
 # RUN rm /etc/nginx/conf.d/default.conf
