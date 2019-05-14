@@ -1,0 +1,6 @@
+.DS_Store
+*.mp4
+/videos
+
+*.ts
+*.m3u8
